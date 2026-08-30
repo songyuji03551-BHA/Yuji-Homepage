@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="하키와 반려견, 좋아하는 순간을 기록하는 유지의 홈페이지" />
+  <title>YUJIVE — 유지의 좋아하는 순간들</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Montserrat:wght@500;600;700;800&display=swap');
+
+    :root {
+      --ink: #141310;
+      --paper: #f5f0e7;
+      --lime: #d8ff3e;
+      --purple: #5440a4;
+      --sky: #bde9ff;
+      --line: rgba(20, 19, 16, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Gowun Dodum", sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; }
+
+    .home-page.hidden,
+    .page-panel { display: none; }
+    .page-panel.active { display: block; }
+    .home-page { display: block; }
+    .page-panel,
+    .page-panel > * {
+      max-width: 100%;
+    }
+    main {
+      min-height: 100vh;
+      overflow: visible;
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 20;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px clamp(20px, 4vw, 64px);
+      color: white;
+    }
+
+    .brand {
+      font: 800 clamp(1.1rem, 2vw, 1.45rem)/1 "Montserrat", sans-serif;
+      letter-spacing: -0.06em;
+      color: var(--lime);
+      text-shadow: 0 0 14px rgba(216, 255, 62, 0.65);
+    }
+
+    nav {
+      display: flex;
+      gap: clamp(14px, 2.5vw, 34px);
+      padding: 12px 16px;
+      background: rgba(20, 19, 16, 0.88);
+      border: 1px solid rgba(216, 255, 62, 0.48);
+      backdrop-filter: blur(10px);
+      max-width: calc(100vw - 170px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    nav::-webkit-scrollbar { display: none; }
+    nav a {
+      font: 600 0.74rem/1 "Montserrat", sans-serif;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--lime);
+      text-shadow: 0 0 12px rgba(216, 255, 62, 0.55);
+    }
+    nav a:hover { color: white; }
+
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+      background: var(--purple);
+      color: white;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 110px clamp(24px, 6vw, 92px) clamp(46px, 7vw, 90px);
+    }
+
+    .kicker {
+      margin: 0 0 18px;
+      font: 700 0.77rem/1 "Montserrat", sans-serif;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--lime);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font: 800 clamp(3.8rem, 9vw, 9rem)/0.82 "Montserrat", sans-serif;
+      letter-spacing: -0.085em;
+      text-transform: uppercase;
+    }
+
+    h1 span {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1.5px white;
+    }
+
+    .hero-note {
+      max-width: 440px;
+      margin: 34px 0 0 auto;
+      font-size: clamp(1rem, 1.5vw, 1.25rem);
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .hero-photo { position: relative; min-height: 520px; overflow: hidden; }
+    .hero-photo img { height: 100%; object-fit: cover; object-position: 50% 48%; }
+    .hero-photo::after {
+      content: "66";
+      position: absolute;
+      right: -0.04em;
+      bottom: -0.2em;
+      font: 800 clamp(8rem, 22vw, 21rem)/1 "Montserrat", sans-serif;
+      letter-spacing: -0.1em;
+      color: var(--lime);
+      mix-blend-mode: screen;
+    }
+
+    .ticker {
+      overflow: hidden;
+      padding: 17px 0 15px;
+      background: var(--lime);
+      border-block: 1px solid var(--ink);
+      white-space: nowrap;
+    }
+
+    .ticker-track {
+      display: inline-block;
+      animation: roll 22s linear infinite;
+      font: 800 0.95rem/1 "Montserrat", sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .ticker-track span { margin-right: 34px; }
+    @keyframes roll { to { transform: translateX(-50%); } }
+
+    .intro {
+      display: grid;
+      grid-template-columns: 0.55fr 1.45fr;
+      gap: 40px;
+      padding: clamp(72px, 11vw, 150px) clamp(24px, 6vw, 92px);
+    }
+
+    .section-label {
+      font: 700 0.76rem/1 "Montserrat", sans-serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .intro h2 {
+      margin: 0;
+      max-width: 970px;
+      font-size: clamp(2.1rem, 5.2vw, 5.1rem);
+      line-height: 1.13;
+      letter-spacing: -0.065em;
+      word-break: keep-all;
+    }
+
+    .gallery {
+      padding: 0 clamp(20px, 4vw, 64px) clamp(80px, 11vw, 150px);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-rows: auto auto;
+      gap: clamp(14px, 2vw, 28px);
+    }
+
+    figure { margin: 0; position: relative; overflow: hidden; background: #ddd; }
+    figure img { height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(.2,.7,.2,1); }
+    figure:hover img { transform: scale(1.035); }
+    figure:nth-child(1) { grid-row: 1 / 3; aspect-ratio: 4 / 5; }
+    figure:nth-child(2), figure:nth-child(3) { aspect-ratio: 4 / 3; }
+
+    figcaption {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      padding: 8px 12px;
+      background: var(--paper);
+      border: 1px solid var(--ink);
+      font: 700 0.7rem/1 "Montserrat", sans-serif;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .manifesto {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 72vh;
+      background: var(--ink);
+      color: white;
+    }
+
+    .manifesto-photo img { height: 100%; object-fit: cover; object-position: center 42%; }
+    .manifesto-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(48px, 7vw, 100px);
+    }
+    .manifesto-copy h2 {
+      margin: 28px 0;
+      font: 800 clamp(3rem, 7vw, 7.2rem)/0.9 "Montserrat", sans-serif;
+      letter-spacing: -0.075em;
+      text-transform: uppercase;
+    }
+    .manifesto-copy h2 em { color: var(--lime); font-style: normal; }
+    .manifesto-copy p { max-width: 430px; margin: 0; line-height: 1.8; color: #c9c7c1; }
+
+    .robotics {
+      min-height: 100vh;
+      padding: clamp(80px, 8vw, 120px) clamp(24px, 6vw, 92px) clamp(40px, 6vw, 80px);
+      background: #f8f5e8;
+    }
+    .robotics-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(36px, 5vw, 92px);
+      align-items: start;
+      min-height: calc(100vh - 180px);
+    }
+    .robotics-info {
+      position: sticky;
+      top: 96px;
+      padding-right: 12px;
+    }
+    .robotics-info p { max-width: 450px; line-height: 1.8; }
+    .robotics-controls {
+      display: grid;
+      gap: 14px;
+      margin-top: 26px;
+    }
+    .robotics-controls label {
+      font-size: 0.82rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      opacity: .75;
+      display: block;
+    }
+    .robotics-controls select,
+    .robotics-controls input {
+      width: 100%;
+      border: 1px solid rgba(20, 19, 16, 0.25);
+      padding: 14px 12px;
+      font: inherit;
+      background: #fff;
+    }
+    .robotics-controls button {
+      width: fit-content;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: white;
+      padding: 12px 16px;
+      cursor: pointer;
+      font: 700 0.72rem/1 "Montserrat", sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .robotics-board { display: grid; gap: 22px; }
+    .upload-card {
+      padding: clamp(28px, 3vw, 36px);
+      border: 1px solid rgba(20, 19, 16, 0.16);
+      background: white;
+      box-shadow: 6px 6px 0 rgba(20, 19, 16, 0.08);
+    }
+    .upload-card h3 { margin: 0 0 10px; font: 800 1.55rem/1.1 "Montserrat", sans-serif; }
+    .upload-card p { margin: 0 0 18px; line-height: 1.75; opacity: 0.88; }
+    .drop-area {
+      position: relative;
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+      border: 1px dashed rgba(20, 19, 16, 0.65);
+      background: rgba(255, 255, 255, 0.92);
+      transition: background 0.2s, border-color 0.2s;
+      text-align: center;
+      overflow: hidden;
+    }
+    .drop-area:hover,
+    .drop-area.focused { background: rgba(216, 255, 62, 0.12); border-color: var(--lime); }
+    .drop-area input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+    .drop-icon { display: block; margin-bottom: 14px; font: 800 2rem/1 "Montserrat", sans-serif; }
+    .drop-copy strong { display: block; margin-bottom: 6px; font-weight: 700; }
+    .drop-copy p { margin: 0; opacity: 0.78; }
+    .video-preview { width: 100%; max-height: 420px; margin-top: 22px; border: 1px solid rgba(20, 19, 16, 0.12); background: #000; }
+    .code-thumbnails { display: grid; gap: 12px; margin-top: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .code-thumbnails img { width: 100%; height: 180px; object-fit: cover; border: 1px solid rgba(20, 19, 16, 0.12); }
+    .project-description textarea,
+    .comment-form textarea,
+    .comment-form input,
+    .comment-form select { width: 100%; border: 1px solid rgba(20, 19, 16, 0.28); background: #fff; font: inherit; padding: 14px 12px; margin-bottom: 14px; }
+    .project-description textarea { min-height: 220px; resize: vertical; }
+    .comment-form { display: grid; gap: 12px; }
+    .comment-form .rating-wrapper { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .comment-form label { font-size: 0.95rem; }
+    .comment-form select { max-width: 180px; }
+    .comment-panel .comment-list { display: grid; gap: 16px; margin-top: 18px; }
+    .comment-item { padding: 18px; border: 1px solid rgba(20, 19, 16, 0.12); background: #fff; }
+    .comment-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.88rem; opacity: 0.78; margin-bottom: 12px; }
+    .comment-meta strong { color: var(--ink); opacity: 1; }
+    .comment-text { margin: 0; white-space: pre-wrap; line-height: 1.7; }
+    .comment-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .comment-actions button,
+    .reply-form button { border: 1px solid rgba(20, 19, 16, 0.22); background: transparent; color: var(--ink); cursor: pointer; padding: 10px 14px; font: 700 0.72rem/1 "Montserrat", sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+    .reply-list { margin-top: 16px; display: grid; gap: 12px; padding-left: 14px; border-left: 2px solid rgba(20, 19, 16, 0.12); }
+    .reply-item { padding: 14px; background: #f7f3e7; border: 1px solid rgba(20, 19, 16, 0.10); }
+    .reply-text { margin: 0; line-height: 1.7; }
+    .reply-form { display: grid; gap: 10px; margin-top: 12px; padding: 14px; border: 1px solid rgba(20, 19, 16, 0.12); background: #fff; }
+    .reply-form.hidden { display: none; }
+    .reply-form textarea { min-height: 120px; }
+    .comment-header h3 { margin: 6px 0 0; font-size: 1.75rem; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 30px;
+      padding: 50px clamp(24px, 6vw, 92px);
+      background: var(--sky);
+      border-top: 1px solid var(--ink);
+    }
+    footer strong { font: 800 clamp(2rem, 5vw, 5rem)/1 "Montserrat", sans-serif; letter-spacing: -0.07em; }
+    footer p { margin: 0; text-align: right; line-height: 1.7; }
+
+    .playground {
+      min-height: 100vh;
+      padding: clamp(78px, 8vw, 110px) clamp(20px, 5vw, 76px) clamp(36px, 5vw, 70px);
+      background: #eee9df;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 30px;
+      margin-bottom: clamp(36px, 6vw, 74px);
+    }
+    .section-head h2 {
+      max-width: 900px;
+      margin: 14px 0 0;
+      font: 800 clamp(2.8rem, 7vw, 7rem)/0.9 "Montserrat", sans-serif;
+      letter-spacing: -0.075em;
+      text-transform: uppercase;
+    }
+    .section-head > p { max-width: 410px; margin: 0; line-height: 1.75; word-break: keep-all; }
+
+    .code-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .code-card {
+      min-height: 390px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--ink);
+      background: white;
+      box-shadow: 7px 7px 0 var(--ink);
+    }
+    .code-card:nth-child(2) { background: var(--lime); }
+    .code-card:nth-child(3) { background: var(--sky); }
+    .card-no { font: 700 0.72rem/1 "Montserrat", sans-serif; letter-spacing: 0.16em; }
+    .code-card h3 { margin: 42px 0 10px; font: 800 1.65rem/1.05 "Montserrat", sans-serif; letter-spacing: -0.04em; }
+    .code-card p { margin: 0; line-height: 1.65; }
+    .game-console { margin-top: auto; padding-top: 28px; }
+    .game-row { display: flex; gap: 8px; }
+    .game-console input {
+      width: 100%; min-width: 0; padding: 12px 13px; border: 1px solid var(--ink);
+      border-radius: 0; background: rgba(255,255,255,.85); font: inherit;
+    }
+    button, .upload-button {
+      border: 1px solid var(--ink); border-radius: 0; padding: 12px 16px;
+      background: var(--ink); color: white; cursor: pointer;
+      font: 700 0.72rem/1 "Montserrat", sans-serif; letter-spacing: .08em; text-transform: uppercase;
+    }
+    button:hover, .upload-button:hover { background: var(--purple); }
+    .game-output { min-height: 24px; margin: 12px 0 0; font-weight: 700; }
+
+    .media-zone {
+      min-height: 100vh;
+      padding: clamp(78px, 8vw, 110px) clamp(20px, 5vw, 76px) clamp(36px, 5vw, 70px);
+    }
+    .media-zone.dark { background: var(--ink); color: white; }
+    .media-zone.purple { background: var(--purple); color: white; }
+    .media-layout { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(30px, 6vw, 90px); align-items: start; min-height: calc(100vh - 180px); }
+    .media-info { position: sticky; top: 90px; }
+    .media-info h2 { margin: 16px 0 22px; font: 800 clamp(2.8rem, 6vw, 6.2rem)/.9 "Montserrat", sans-serif; letter-spacing: -.075em; text-transform: uppercase; }
+    .media-info p { max-width: 460px; line-height: 1.75; word-break: keep-all; }
+    .media-board { display: grid; gap: 18px; }
+    .upload-panel { padding: clamp(22px, 4vw, 42px); border: 1px solid currentColor; background: rgba(255,255,255,.07); }
+    .upload-panel h3 { margin: 0 0 10px; font: 700 1.25rem/1.2 "Montserrat", sans-serif; }
+    .upload-panel > p { margin: 0 0 22px; color: inherit; opacity: .74; line-height: 1.65; }
+    .drop-area { position: relative; min-height: 230px; display: grid; place-items: center; border: 1px dashed currentColor; overflow: hidden; text-align: center; }
+    .drop-area.has-photo { min-height: 360px; border-style: solid; background: #000; }
+    .drop-area input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+    .drop-area img { display: none; width: 100%; height: 100%; min-height: 360px; max-height: 560px; object-fit: cover; }
+    .drop-area.has-photo img { display: block; }
+    .drop-area.has-photo .drop-copy { display: none; }
+    .drop-icon { display: block; margin-bottom: 12px; font: 800 2.8rem/1 "Montserrat", sans-serif; }
+    .analysis-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+    .analysis-result { flex: 1 1 220px; margin: 0; font-size: .9rem; line-height: 1.5; opacity: .82; }
+    .media-zone:not(.dark):not(.purple) .upload-panel { background: white; }
+    .mini-description {
+      margin: 24px 0 0;
+      padding-left: 16px;
+      border-left: 3px solid var(--lime);
+      font-size: .95rem;
+      line-height: 1.7;
+      opacity: .82;
+    }
+    .fixed-photo {
+      margin: 0;
+      border: 0;
+      background: transparent;
+      overflow: hidden;
+      line-height: 0;
+    }
+    .fixed-photo img { width: 100%; height: auto; min-height: 0; max-height: none; object-fit: contain; }
+    .hockey-upload { display: grid; gap: 18px; }
+    .hockey-upload .drop-area { min-height: 190px; border-color: rgba(255,255,255,.65); background: rgba(255,255,255,.04); }
+    .hockey-upload .drop-area:hover,
+    .hockey-upload .drop-area.focused { background: rgba(216,255,62,.12); border-color: var(--lime); }
+    .hockey-upload .drop-copy p { color: rgba(255,255,255,.72); }
+    .hockey-video { width: 100%; max-height: 360px; background: #000; border: 1px solid rgba(255,255,255,.22); }
+    .hockey-analysis { padding: 22px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.06); }
+    .hockey-analysis h3 { margin: 0 0 16px; font: 700 1.05rem/1.2 "Montserrat", sans-serif; letter-spacing: .04em; text-transform: uppercase; }
+    .analysis-status { margin: 0 0 18px; color: rgba(255,255,255,.75); line-height: 1.6; }
+    .analysis-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0; }
+    .analysis-metrics div { padding: 14px; border-top: 2px solid var(--lime); background: rgba(0,0,0,.2); }
+    .analysis-metrics dt { color: rgba(255,255,255,.62); font-size: .75rem; }
+    .analysis-metrics dd { margin: 7px 0 0; font: 700 1.15rem/1 "Montserrat", sans-serif; color: var(--lime); }
+    .analysis-report { margin: 18px 0 0; line-height: 1.7; color: rgba(255,255,255,.84); }
+    @media (max-width: 520px) { .analysis-metrics { grid-template-columns: 1fr; } }
+
+    .sibling {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+      background: var(--lime);
+    }
+    .sibling-placeholder {
+      min-height: calc(100vh - 100px);
+      display: grid;
+      place-items: center;
+      border-right: 1px solid var(--ink);
+      background: #f4f1ea;
+      overflow: hidden;
+      position: relative;
+    }
+    .sibling-placeholder input { display: none; }
+    .sibling-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 12%;
+      display: none;
+      background: #f4f1ea;
+    }
+    .sibling-placeholder.has-image img { display: block; }
+    .sibling-placeholder.has-image .sibling-upload-copy { display: none; }
+    .sibling-placeholder::after {
+      content: "Best sidekick";
+      position: absolute;
+      left: 24px;
+      bottom: 20px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(20,19,16,0.35);
+      font: 700 0.72rem/1 "Montserrat", sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      backdrop-filter: blur(2px);
+    }
+    .sibling-upload-copy { padding: 30px; text-align: center; }
+    .sibling-upload-copy strong { display: block; margin-bottom: 20px; font: 800 clamp(3rem, 7vw, 7rem)/.85 "Montserrat", sans-serif; letter-spacing: -.08em; }
+    .sibling-copy { display: flex; flex-direction: column; justify-content: space-between; padding: clamp(44px, 7vw, 100px); }
+    .sibling-copy h2 { margin: 20px 0; font: 800 clamp(3rem, 7vw, 7rem)/.88 "Montserrat", sans-serif; letter-spacing: -.08em; text-transform: uppercase; }
+    .sibling-copy p { max-width: 450px; line-height: 1.8; }
+    .privacy-note { font-size: .82rem; opacity: .65; }
+
+    @media (max-width: 760px) {
+      nav a:nth-child(2) { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-copy { min-height: 72svh; }
+      .hero-note { margin-left: 0; }
+      .hero-photo { min-height: 66svh; }
+      .intro { grid-template-columns: 1fr; gap: 24px; }
+      .gallery { grid-template-columns: 1fr; grid-template-rows: none; }
+      figure:nth-child(1) { grid-row: auto; aspect-ratio: 4 / 5; }
+      figure:nth-child(2), figure:nth-child(3) { aspect-ratio: 4 / 3; }
+      .manifesto { grid-template-columns: 1fr; }
+      .manifesto-photo { min-height: 65svh; }
+      footer { align-items: start; flex-direction: column; }
+      footer p { text-align: left; }
+      .section-head, .media-layout { display: grid; grid-template-columns: 1fr; }
+      .code-grid { grid-template-columns: 1fr; }
+      .media-info { position: static; }
+      .sibling { grid-template-columns: 1fr; }
+      .sibling-placeholder { min-height: 62svh; border-right: 0; border-bottom: 1px solid var(--ink); }
+      .sibling-placeholder::after { left: 16px; bottom: 16px; padding: 7px 10px; }
+      .topbar { padding-inline: 14px; }
+      nav { max-width: calc(100vw - 112px); padding: 10px 12px; gap: 16px; }
+      nav a { font-size: .64rem; white-space: nowrap; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .ticker-track { animation: none; }
+      figure img { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="YUJIVE 첫 화면">YUJIVE°</a>
+    <nav aria-label="메인 메뉴">
+      <a href="#code" data-page="code">Code</a>
+      <a href="#hockey" data-page="hockey">Hockey</a>
+      <a href="#robotics" data-page="robotics">Robotics</a>
+      <a href="#instrument" data-page="instrument">Cello</a>
+      <a href="#pets" data-page="pets">Pets</a>
+      <a href="#sidekick" data-page="sidekick">Sidekick</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero home-page" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="kicker">Life on ice · Life with paws</p>
+        <h1 id="hero-title">Play.<span>Love.</span>Repeat.</h1>
+        <p class="hero-note">하키에 몰입하는 순간과 반려견과 함께 느리게 걷는 시간. 유지가 좋아하는 두 가지 세계를 한 곳에 담았습니다.</p>
+      </div>
+      <div class="hero-photo">
+        <img src="IMG_7830 2.JPG" alt="아이스링크 앞에 서 있는 66번 하키 선수" />
+      </div>
+    </section>
+
+    <div class="ticker home-page" aria-hidden="true">
+      <div class="ticker-track"><span>Be remarkable ✦ Stay curious ✦ Move with joy ✦</span><span>Be remarkable ✦ Stay curious ✦ Move with joy ✦</span><span>Be remarkable ✦ Stay curious ✦ Move with joy ✦</span><span>Be remarkable ✦ Stay curious ✦ Move with joy ✦</span></div>
+    </div>
+
+    <section class="intro home-page" id="story">
+      <p class="section-label">01 — My story</p>
+      <h2>빠르게 달릴 때도, 가만히 바라볼 때도. 좋아하는 마음은 언제나 진심이니까.</h2>
+    </section>
+
+    <section class="gallery home-page" id="moments" aria-label="좋아하는 순간들">
+      <figure>
+        <img src="assets/doberman-funny.jpeg" alt="야외에서 장난스러운 표정을 짓는 도베르만" loading="lazy" />
+        <figcaption>Mood of the day</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/doberman-beach.jpeg" alt="바닷가 앞에 앉아 있는 도베르만" loading="lazy" />
+        <figcaption>Ocean breeze</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/doberman-home.jpeg" alt="침대 위에서 쓰다듬을 받는 도베르만" loading="lazy" />
+        <figcaption>Slow mornings</figcaption>
+      </figure>
+    </section>
+
+    <section class="robotics page-panel" id="robotics">
+      <div class="section-head">
+        <div>
+          <p class="section-label">02 — Robotics award</p>
+          <h2>Think.<br />Build.<br /><em>Share.</em></h2>
+        </div>
+        <p>로봇 프로젝트 영상과 블록 코드 캡처, 설명, 댓글을 한 곳에 정리할 수 있는 공간입니다.</p>
+      </div>
+      <div class="robotics-grid">
+        <aside class="robotics-info">
+          <p>대회 준비 과정과 결과물을 시각적으로 보여주고, 방문자의 평가와 답글을 함께 관리할 수 있습니다.</p>
+          <p class="mini-description">mov / mp4 업로드, 블록 코드 캡처 업로드, 프로젝트 설명, 댓글 + 답글까지 지원합니다.</p>
+          <div class="robotics-controls">
+            <label for="project-select">프로젝트 선택</label>
+            <select id="project-select" aria-label="로보틱스 프로젝트 선택"></select>
+            <button id="new-project-button" type="button">새 프로젝트 추가</button>
+            <label for="project-title">선택한 프로젝트 제목</label>
+            <input id="project-title" type="text" placeholder="프로젝트 제목을 입력하세요" aria-label="프로젝트 제목" />
+          </div>
+        </aside>
+        <div class="robotics-board">
+          <article class="upload-card">
+            <h3>Project video upload</h3>
+            <p>mov 또는 mp4 동영상을 드래그 앤 드롭하거나 클릭하여 업로드하세요.</p>
+            <div class="drop-area" id="video-drop" data-type="video" tabindex="0">
+              <span class="drop-icon">⤓</span>
+              <div class="drop-copy">
+                <strong>Drop video here</strong>
+                <p>mov / mp4 파일을 놓거나 클릭해 선택</p>
+              </div>
+              <input id="video-input" type="file" accept="video/mp4,video/quicktime" />
+            </div>
+            <p class="analysis-result" id="video-info">업로드된 영상이 없습니다.</p>
+            <video id="video-preview" class="video-preview" controls hidden playsinline></video>
+          </article>
+
+          <article class="upload-card">
+            <h3>Algorithm block code</h3>
+            <p>블록 코드 캡처, 알고리즘 설계 다이어그램을 이미지로 업로드할 수 있습니다.</p>
+            <div class="drop-area" id="code-drop" data-type="code" tabindex="0">
+              <span class="drop-icon">⌘</span>
+              <div class="drop-copy">
+                <strong>Drop capture here</strong>
+                <p>PNG / JPG / JPEG / GIF 파일을 놓거나 클릭</p>
+              </div>
+              <input id="code-input" type="file" accept="image/png,image/jpeg,image/jpg,image/gif" multiple />
+            </div>
+            <p class="analysis-result" id="code-info">업로드된 캡처가 없습니다.</p>
+            <div class="code-thumbnails" id="code-thumbnails"></div>
+          </article>
+
+          <article class="upload-card project-description">
+            <h3>Project description</h3>
+            <p>여기에 프로젝트 기획과 기능, 결과를 설명하는 문장을 적어주세요.</p>
+            <textarea id="project-description" placeholder="프로젝트 설명을 입력해 주세요."></textarea>
+          </article>
+
+          <article class="upload-card comment-panel">
+            <div class="comment-header">
+              <p class="section-label">Feedback</p>
+              <h3>방문자가 평가하고 내가 답글 달 수 있어요.</h3>
+            </div>
+            <div class="comment-form">
+              <input id="comment-name" type="text" placeholder="이름 또는 닉네임" />
+              <div class="rating-wrapper">
+                <label for="comment-rating">평가</label>
+                <select id="comment-rating" aria-label="평가 점수">
+                  <option value="5">★★★★★ 5</option>
+                  <option value="4">★★★★ 4</option>
+                  <option value="3">★★★ 3</option>
+                  <option value="2">★★ 2</option>
+                  <option value="1">★ 1</option>
+                </select>
+              </div>
+              <textarea id="comment-text" rows="4" placeholder="프로젝트를 보고 평가와 댓글을 남겨주세요."></textarea>
+              <button id="comment-submit" type="button">댓글 남기기</button>
+            </div>
+            <div class="comment-list" id="comments"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="playground page-panel" id="code">
+      <div class="section-head">
+        <div>
+          <p class="section-label">03 — Code playground</p>
+          <h2>Build it.<br />Play it.</h2>
+        </div>
+        <p>파이썬으로 만든 아이디어를 방문자도 설치 없이 바로 실행해 볼 수 있도록 브라우저 미니 앱으로 재구성했습니다.</p>
+      </div>
+      <div class="code-grid">
+        <article class="code-card">
+          <span class="card-no">PYTHON → WEB / 01</span>
+          <h3>UP &amp; DOWN</h3>
+          <p>1부터 50 사이의 숨은 숫자를 5번 안에 맞혀보세요.</p>
+          <div class="game-console">
+            <div class="game-row"><input id="guess-input" type="number" min="1" max="50" placeholder="1–50" aria-label="숫자 추측" /><button id="guess-button" type="button">Guess</button></div>
+            <p class="game-output" id="guess-output" aria-live="polite">게임을 시작해보세요.</p>
+          </div>
+        </article>
+        <article class="code-card">
+          <span class="card-no">PYTHON → WEB / 02</span>
+          <h3>MULTIPLY!</h3>
+          <p>랜덤 구구단 10문제. 정답을 입력하고 점수를 올려보세요.</p>
+          <div class="game-console">
+            <p class="game-output" id="math-question">2 × 2 = ?</p>
+            <div class="game-row"><input id="math-input" type="number" placeholder="정답" aria-label="구구단 정답" /><button id="math-button" type="button">Check</button></div>
+            <p id="math-score">점수 0 / 0</p>
+          </div>
+        </article>
+        <article class="code-card">
+          <span class="card-no">PYTHON → WEB / 03</span>
+          <h3>20 SEC.</h3>
+          <p>타이머를 보지 않고 정확히 20초를 맞혀보세요.</p>
+          <div class="game-console">
+            <button id="timer-button" type="button">Start timer</button>
+            <p class="game-output" id="timer-output" aria-live="polite">준비되면 시작!</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="media-zone dark page-panel" id="hockey">
+      <div class="media-layout">
+        <div class="media-info">
+          <p class="section-label">04 — Hockey vision lab</p>
+          <h2>Read<br />the ice.</h2>
+          <p>아이스 위에서 배우는 균형, 속도, 팀워크를 기록하는 공간입니다.</p>
+          <p class="mini-description">한 번의 스케이팅과 한 번의 샷에 집중하며 매일 좀 더 나아집니다.</p>
+        </div>
+        <div class="media-board">
+          <figure class="fixed-photo"><img src="assets/hockey-3275.jpg" alt="아이스링크 위에 서 있는 66번 하키 선수" loading="lazy" /></figure>
+          <article class="upload-panel hockey-upload">
+            <h3>Hockey video lab</h3>
+            <p>경기 영상이나 훈련 영상을 올리면 브라우저에서 영상을 스캔해 활동량과 장면 변화를 분석합니다.</p>
+            <div class="drop-area" id="hockey-video-drop" tabindex="0">
+              <span class="drop-icon">⤓</span>
+              <div class="drop-copy">
+                <strong>Drop game video here</strong>
+                <p>MP4 / MOV / WebM 파일을 놓거나 클릭해 선택</p>
+              </div>
+              <input id="hockey-video-input" type="file" accept="video/*" />
+            </div>
+            <video id="hockey-video-preview" class="hockey-video" controls hidden playsinline></video>
+            <div class="analysis-bar">
+              <p class="analysis-result" id="hockey-video-info">분석할 하키 영상을 선택해 주세요.</p>
+              <button id="hockey-analyze-button" type="button" disabled>Analyze video</button>
+            </div>
+            <section class="hockey-analysis" aria-live="polite">
+              <h3>AI vision scan</h3>
+              <p class="analysis-status" id="hockey-analysis-status">영상 프레임을 분석하면 리포트가 표시됩니다.</p>
+              <dl class="analysis-metrics">
+                <div><dt>Frames scanned</dt><dd id="hockey-frames">—</dd></div>
+                <div><dt>Motion index</dt><dd id="hockey-motion">—</dd></div>
+                <div><dt>Activity level</dt><dd id="hockey-activity">—</dd></div>
+              </dl>
+              <p class="analysis-report" id="hockey-analysis-report">업로드한 영상은 서버에 저장되며, 분석은 이 기기의 브라우저에서 처리됩니다.</p>
+            </section>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="media-zone page-panel" id="instrument">
+      <div class="media-layout">
+        <div class="media-info">
+          <p class="section-label">05 — Instrument</p>
+          <h2>Play<br />it loud.</h2>
+          <p>첼로의 따뜻한 소리와 연주를 준비하는 순간을 기록합니다.</p>
+          <p class="mini-description">한 음씩 천천히 쌓아 올리며 나만의 소리와 표현을 찾아갑니다.</p>
+        </div>
+        <div class="media-board">
+          <figure class="fixed-photo"><img src="assets/cello-performance.jpg" alt="첼로를 들고 연주자와 함께 찍은 사진" loading="lazy" /></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="media-zone purple page-panel" id="pets">
+      <div class="media-layout">
+        <div class="media-info">
+          <p class="section-label">06 — Pet vision diary</p>
+          <h2>Paws<br />in motion.</h2>
+          <p>고양이와 강아지의 사랑스러운 표정과 일상을 담는 반려동물 다이어리입니다.</p>
+          <p class="mini-description">조용한 낮잠부터 신나는 산책까지, 함께해서 더 행복한 순간들.</p>
+        </div>
+        <div class="media-board">
+          <figure class="fixed-photo"><img src="assets/abyssinian-cat.jpeg" alt="민트색 리본을 하고 소파에서 쉬는 아비시니안 고양이" loading="lazy" /></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="sibling page-panel" id="sidekick">
+      <div class="sibling-placeholder has-image" id="sibling-photo">
+        <img src="assets/siblings-hug.png" alt="서로 안고 환하게 웃는 자매" loading="lazy" />
+      </div>
+      <div class="sibling-copy">
+        <div><p class="section-label">07 — My sibling</p><h2>Best<br />sidekick.</h2></div>
+        <div><p>가장 가까운 친구이자 함께 자라는 파트너. 우리의 좋은 추억과 재미있는 순간을 담았습니다.</p><p class="mini-description">서로를 가장 잘 알고, 언제나 편이 되어주는 나의 베스트 사이드킥.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>See you outside.</strong>
+    <p>유지의 좋아하는 순간들<br />Made with energy &amp; affection.</p>
+  </footer>
+  <script>
+    const homeSections = document.querySelectorAll('.home-page');
+    const pagePanels = document.querySelectorAll('.page-panel');
+    const allMainSections = document.querySelectorAll('main > section, footer');
+    const activatePage = (pageId = 'top') => {
+      const normalized = pageId || 'top';
+      const targetId = normalized.startsWith('#') ? normalized.slice(1) : normalized;
+
+      homeSections.forEach(section => {
+        section.classList.toggle('hidden', targetId !== 'top');
+      });
+
+      pagePanels.forEach(panel => {
+        const isActive = panel.id === targetId;
+        panel.classList.toggle('active', isActive);
+      });
+
+      allMainSections.forEach(section => {
+        const shouldShow = section.tagName === 'FOOTER'
+          ? false
+          : targetId === 'top'
+            ? section.classList.contains('hero')
+            : section.id === targetId;
+        section.style.display = shouldShow ? '' : 'none';
+      });
+
+      const hash = targetId === 'top' ? '#top' : `#${targetId}`;
+      history.replaceState(null, '', hash);
+    };
+
+    document.querySelectorAll('[data-page]').forEach(link => {
+      link.addEventListener('click', event => {
+        event.preventDefault();
+        activatePage(link.dataset.page);
+      });
+    });
+
+    document.querySelector('.brand').addEventListener('click', event => {
+      event.preventDefault();
+      activatePage('top');
+    });
+
+    const initialPage = location.hash ? location.hash.slice(1) : 'top';
+    if (document.getElementById(initialPage)) {
+      activatePage(initialPage);
+    } else {
+      activatePage('top');
+    }
+
+    const guessInput = document.querySelector('#guess-input');
+    const guessOutput = document.querySelector('#guess-output');
+    let secretNumber = Math.floor(Math.random() * 50) + 1;
+    let guessCount = 0;
+
+    document.querySelector('#guess-button').addEventListener('click', () => {
+      const value = Number(guessInput.value);
+      if (!value || value < 1 || value > 50) {
+        guessOutput.textContent = '1~50 사이 숫자를 입력해 주세요.';
+        return;
+      }
+      guessCount += 1;
+      if (value === secretNumber) {
+        guessOutput.textContent = `정답! ${guessCount}번 만에 맞혔어요. 새 게임 시작!`;
+        secretNumber = Math.floor(Math.random() * 50) + 1;
+        guessCount = 0;
+      } else if (guessCount >= 5) {
+        guessOutput.textContent = `게임 끝! 정답은 ${secretNumber}. 새 숫자가 준비됐어요.`;
+        secretNumber = Math.floor(Math.random() * 50) + 1;
+        guessCount = 0;
+      } else {
+        guessOutput.textContent = `${value < secretNumber ? 'UP ↑' : 'DOWN ↓'} · 남은 기회 ${5 - guessCount}번`;
+      }
+      guessInput.value = '';
+      guessInput.focus();
+    });
+
+    let factorA;
+    let factorB;
+    let mathTotal = 0;
+    let mathCorrect = 0;
+    const newQuestion = () => {
+      factorA = Math.floor(Math.random() * 11) + 2;
+      factorB = Math.floor(Math.random() * 12) + 1;
+      document.querySelector('#math-question').textContent = `${factorA} × ${factorB} = ?`;
+    };
+    newQuestion();
+    document.querySelector('#math-button').addEventListener('click', () => {
+      const input = document.querySelector('#math-input');
+      if (input.value === '') return;
+      mathTotal += 1;
+      if (Number(input.value) === factorA * factorB) mathCorrect += 1;
+      document.querySelector('#math-score').textContent = `점수 ${mathCorrect} / ${mathTotal} · ${Number(input.value) === factorA * factorB ? '정답!' : `정답 ${factorA * factorB}`}`;
+      input.value = '';
+      newQuestion();
+      input.focus();
+    });
+
+    let timerStart = null;
+    const timerButton = document.querySelector('#timer-button');
+    timerButton.addEventListener('click', () => {
+      if (timerStart === null) {
+        timerStart = performance.now();
+        timerButton.textContent = 'Stop timer';
+        document.querySelector('#timer-output').textContent = '속으로 20초를 세고 멈춰보세요…';
+      } else {
+        const elapsed = (performance.now() - timerStart) / 1000;
+        document.querySelector('#timer-output').textContent = `${elapsed.toFixed(2)}초 · 20초와 ${Math.abs(20 - elapsed).toFixed(2)}초 차이!`;
+        timerStart = null;
+        timerButton.textContent = 'Try again';
+      }
+    });
+
+    const STORAGE_KEY = 'yujive-robotics-state';
+    const serverEnabled = window.location.protocol.startsWith('http');
+    const state = {
+      currentProjectId: null,
+      projects: {}
+    };
+
+    const commentsContainer = document.querySelector('#comments');
+    const commentName = document.querySelector('#comment-name');
+    const commentText = document.querySelector('#comment-text');
+    const commentRating = document.querySelector('#comment-rating');
+    const commentSubmit = document.querySelector('#comment-submit');
+    const projectDescriptionInput = document.querySelector('#project-description');
+    const projectSelect = document.querySelector('#project-select');
+    const newProjectButton = document.querySelector('#new-project-button');
+    const projectTitleInput = document.querySelector('#project-title');
+
+    const preventDefaults = e => { e.preventDefault(); e.stopPropagation(); };
+    const videoDrop = document.querySelector('#video-drop');
+    const videoInput = document.querySelector('#video-input');
+    const videoInfo = document.querySelector('#video-info');
+    const videoPreview = document.querySelector('#video-preview');
+    let currentVideoUrl = null;
+
+    const hockeyVideoDrop = document.querySelector('#hockey-video-drop');
+    const hockeyVideoInput = document.querySelector('#hockey-video-input');
+    const hockeyVideoPreview = document.querySelector('#hockey-video-preview');
+    const hockeyVideoInfo = document.querySelector('#hockey-video-info');
+    const hockeyAnalyzeButton = document.querySelector('#hockey-analyze-button');
+    const hockeyAnalysisStatus = document.querySelector('#hockey-analysis-status');
+    const hockeyFrames = document.querySelector('#hockey-frames');
+    const hockeyMotion = document.querySelector('#hockey-motion');
+    const hockeyActivity = document.querySelector('#hockey-activity');
+    const hockeyAnalysisReport = document.querySelector('#hockey-analysis-report');
+    let currentHockeyVideo = null;
+    let currentHockeyVideoUrl = null;
+
+    const codeDrop = document.querySelector('#code-drop');
+    const codeInput = document.querySelector('#code-input');
+    const codeInfo = document.querySelector('#code-info');
+    const codeThumbnails = document.querySelector('#code-thumbnails');
+    let currentCodeUrls = [];
+
+    const validVideoFile = file => file.type.startsWith('video/') || /\.(mov|mp4)$/i.test(file.name);
+    const validCodeFile = file => file.type.startsWith('image/') || /\.(png|jpe?g|gif)$/i.test(file.name);
+
+    const saveLocalState = () => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        console.warn('Local storage failed', error);
+      }
+    };
+
+    const loadLocalState = () => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return;
+        const parsed = JSON.parse(saved);
+        Object.assign(state, parsed);
+      } catch (error) {
+        console.warn('Failed to load local state', error);
+      }
+    };
+
+    const fetchJson = async (path, options = {}) => {
+      if (!serverEnabled) return null;
+      try {
+        const response = await fetch(path, options);
+        if (!response.ok) return null;
+        return await response.json();
+      } catch (error) {
+        console.warn('Server fetch failed', error);
+        return null;
+      }
+    };
+
+    const getCurrentProject = () => {
+      if (!state.currentProjectId || !state.projects[state.currentProjectId]) {
+        const ids = Object.keys(state.projects);
+        state.currentProjectId = ids.length ? ids[0] : null;
+      }
+      return state.projects[state.currentProjectId] || null;
+    };
+
+    const createProject = (title = 'New project') => {
+      const id = `project-${Date.now()}`;
+      state.projects[id] = {
+        id,
+        title,
+        description: '',
+        comments: [],
+        video: null,
+        codeUploads: []
+      };
+      state.currentProjectId = id;
+      saveLocalState();
+      updateProjectFields();
+      return state.projects[id];
+    };
+
+    const updateProjectFields = () => {
+      const project = getCurrentProject();
+      if (!project) return;
+      if (projectTitleInput) projectTitleInput.value = project.title || '';
+      if (projectDescriptionInput) projectDescriptionInput.value = project.description || '';
+      if (projectSelect) {
+        projectSelect.innerHTML = '';
+        Object.values(state.projects).forEach(projectItem => {
+          const option = document.createElement('option');
+          option.value = projectItem.id;
+          option.textContent = projectItem.title || 'Untitled project';
+          projectSelect.appendChild(option);
+        });
+        projectSelect.value = project.id;
+      }
+      if (project.video) updateVideoFromServer(project.video);
+      else {
+        videoPreview.hidden = true;
+        videoInfo.textContent = '업로드된 영상이 없습니다.';
+      }
+      if (project.codeUploads) updateCodeFromServer(project.codeUploads);
+      else {
+        codeThumbnails.innerHTML = '';
+        codeInfo.textContent = '업로드된 캡처가 없습니다.';
+      }
+      renderComments();
+    };
+
+    const loadServerState = async () => {
+      const data = await fetchJson('/api/robotics-state');
+      if (!data) return;
+      if (data.projects && typeof data.projects === 'object') state.projects = data.projects;
+      if (typeof data.currentProjectId === 'string') state.currentProjectId = data.currentProjectId;
+      if (!state.currentProjectId) {
+        const ids = Object.keys(state.projects);
+        state.currentProjectId = ids.length ? ids[0] : null;
+      }
+      saveLocalState();
+      updateProjectFields();
+    };
+
+    const updateVideoPreview = file => {
+      if (!file) return;
+      if (currentVideoUrl) URL.revokeObjectURL(currentVideoUrl);
+      currentVideoUrl = URL.createObjectURL(file);
+      videoPreview.src = currentVideoUrl;
+      videoPreview.hidden = false;
+      videoInfo.textContent = `선택된 영상: ${file.name} · ${(file.size / 1024 / 1024).toFixed(1)}MB`;
+    };
+
+    const updateVideoFromServer = video => {
+      if (!video || !video.url) return;
+      videoPreview.src = video.url;
+      videoPreview.hidden = false;
+      videoInfo.textContent = `서버에 저장된 영상: ${video.name}`;
+    };
+
+    const updateCodePreviews = files => {
+      currentCodeUrls.forEach(URL.revokeObjectURL);
+      currentCodeUrls = [];
+      codeThumbnails.innerHTML = '';
+      const images = Array.from(files).filter(validCodeFile);
+      if (!images.length) {
+        codeInfo.textContent = '지원되는 캡처 파일이 없습니다.';
+        return;
+      }
+      images.forEach(file => {
+        const url = URL.createObjectURL(file);
+        currentCodeUrls.push(url);
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = `업로드된 블록 코드 캡처: ${file.name}`;
+        codeThumbnails.appendChild(img);
+      });
+      codeInfo.textContent = `${images.length}개 캡처 업로드됨.`;
+    };
+
+    const updateCodeFromServer = uploads => {
+      codeThumbnails.innerHTML = '';
+      currentCodeUrls.forEach(URL.revokeObjectURL);
+      currentCodeUrls = [];
+      if (!uploads || !uploads.length) {
+        codeInfo.textContent = '업로드된 캡처가 없습니다.';
+        return;
+      }
+      uploads.forEach(upload => {
+        const img = document.createElement('img');
+        img.src = upload.url;
+        img.alt = `서버에 저장된 블록 코드: ${upload.name}`;
+        codeThumbnails.appendChild(img);
+      });
+      codeInfo.textContent = `${uploads.length}개 캡처가 서버에 저장되었습니다.`;
+    };
+
+    const highlight = area => area.classList.add('focused');
+    const unhighlight = area => area.classList.remove('focused');
+
+    const attachDropArea = (area, input, onFiles) => {
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        area.addEventListener(eventName, preventDefaults, false);
+      });
+      ['dragenter', 'dragover'].forEach(eventName => {
+        area.addEventListener(eventName, () => highlight(area), false);
+      });
+      ['dragleave', 'drop'].forEach(eventName => {
+        area.addEventListener(eventName, () => unhighlight(area), false);
+      });
+      area.addEventListener('drop', e => {
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+          onFiles(e.dataTransfer.files);
+        }
+      });
+      area.addEventListener('click', () => input.click());
+      input.addEventListener('change', () => {
+        if (input.files && input.files.length) onFiles(input.files);
+      });
+    };
+
+    const submitVideoToServer = async file => {
+      const project = getCurrentProject();
+      if (!project) return;
+      const form = new FormData();
+      form.append('projectId', project.id);
+      form.append('video', file);
+      const data = await fetchJson('/api/upload-video', { method: 'POST', body: form });
+      if (data && data.video) {
+        project.video = data.video;
+        saveLocalState();
+        updateVideoFromServer(project.video);
+      }
+    };
+
+    const setHockeyVideo = file => {
+      if (!file) return;
+      currentHockeyVideo = file;
+      if (currentHockeyVideoUrl) URL.revokeObjectURL(currentHockeyVideoUrl);
+      currentHockeyVideoUrl = URL.createObjectURL(file);
+      hockeyVideoPreview.src = currentHockeyVideoUrl;
+      hockeyVideoPreview.hidden = false;
+      hockeyAnalyzeButton.disabled = false;
+      hockeyVideoInfo.textContent = `선택된 영상: ${file.name} · ${(file.size / 1024 / 1024).toFixed(1)}MB`;
+      hockeyAnalysisStatus.textContent = '분석 준비 완료. 영상을 재생하지 않아도 스캔할 수 있습니다.';
+      hockeyAnalysisReport.textContent = '브라우저 비전 스캔은 영상의 대표 프레임을 비교해 움직임을 추정합니다.';
+    };
+
+    const scanHockeyVideo = async () => {
+      if (!currentHockeyVideo || !hockeyVideoPreview.duration) return;
+      hockeyAnalyzeButton.disabled = true;
+      hockeyAnalysisStatus.textContent = '프레임을 읽고 움직임을 계산하는 중...';
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d', { willReadFrequently: true });
+      const sampleCount = Math.min(12, Math.max(4, Math.ceil(hockeyVideoPreview.duration / 5)));
+      const frameSamples = [];
+      const readFrame = time => new Promise(resolve => {
+        const handleSeeked = () => {
+          hockeyVideoPreview.removeEventListener('seeked', handleSeeked);
+          canvas.width = 96;
+          canvas.height = 54;
+          context.drawImage(hockeyVideoPreview, 0, 0, canvas.width, canvas.height);
+          resolve(context.getImageData(0, 0, canvas.width, canvas.height).data);
+        };
+        hockeyVideoPreview.addEventListener('seeked', handleSeeked);
+        hockeyVideoPreview.currentTime = time;
+      });
+
+      for (let index = 0; index < sampleCount; index += 1) {
+        frameSamples.push(await readFrame((hockeyVideoPreview.duration * index) / (sampleCount - 1)));
+      }
+      let totalDifference = 0;
+      for (let index = 1; index < frameSamples.length; index += 1) {
+        const previous = frameSamples[index - 1];
+        const current = frameSamples[index];
+        let difference = 0;
+        for (let pixel = 0; pixel < current.length; pixel += 4) {
+          difference += Math.abs(current[pixel] - previous[pixel]);
+          difference += Math.abs(current[pixel + 1] - previous[pixel + 1]);
+          difference += Math.abs(current[pixel + 2] - previous[pixel + 2]);
+        }
+        totalDifference += difference / (current.length * 3 / 4 * 255);
+      }
+      const motionIndex = Math.round((totalDifference / (frameSamples.length - 1)) * 100);
+      const activity = motionIndex > 24 ? 'HIGH' : motionIndex > 10 ? 'MEDIUM' : 'LOW';
+      hockeyFrames.textContent = String(frameSamples.length);
+      hockeyMotion.textContent = `${motionIndex}%`;
+      hockeyActivity.textContent = activity;
+      hockeyAnalysisStatus.textContent = '비전 스캔 완료';
+      hockeyAnalysisReport.textContent = `${activity === 'HIGH' ? '빠른 플레이와 장면 전환이 많은' : activity === 'MEDIUM' ? '움직임이 균형 있게 포함된' : '정적인 장면이 많은'} 영상으로 감지되었습니다. 이는 프레임 변화량 기반의 참고 분석입니다.`;
+      hockeyAnalyzeButton.disabled = false;
+    };
+
+    const submitCodeToServer = async files => {
+      const project = getCurrentProject();
+      if (!project) return;
+      const form = new FormData();
+      form.append('projectId', project.id);
+      Array.from(files).forEach(file => form.append('captures', file));
+      const data = await fetchJson('/api/upload-capture', { method: 'POST', body: form });
+      if (data && Array.isArray(data.codeUploads)) {
+        project.codeUploads = data.codeUploads;
+        saveLocalState();
+        updateCodeFromServer(project.codeUploads);
+      }
+    };
+
+    attachDropArea(videoDrop, videoInput, files => {
+      const file = Array.from(files).find(validVideoFile);
+      if (!file) {
+        videoInfo.textContent = 'mov 또는 mp4 형식의 비디오를 올려주세요.';
+        return;
+      }
+      updateVideoPreview(file);
+      if (serverEnabled) submitVideoToServer(file);
+      else {
+        const project = getCurrentProject() || createProject();
+        project.video = { name: file.name, size: file.size };
+        saveLocalState();
+      }
+    });
+
+    attachDropArea(hockeyVideoDrop, hockeyVideoInput, files => {
+      const file = Array.from(files).find(validVideoFile);
+      if (!file) {
+        hockeyVideoInfo.textContent = '지원되는 비디오 형식을 올려주세요.';
+        return;
+      }
+      setHockeyVideo(file);
+      if (serverEnabled) submitVideoToServer(file);
+    });
+    hockeyAnalyzeButton.addEventListener('click', scanHockeyVideo);
+
+    attachDropArea(codeDrop, codeInput, files => {
+      const validFiles = Array.from(files).filter(validCodeFile);
+      if (!validFiles.length) {
+        codeInfo.textContent = 'PNG, JPG, JPEG, GIF 형식의 캡처를 올려주세요.';
+        return;
+      }
+      updateCodePreviews(validFiles);
+      if (serverEnabled) submitCodeToServer(validFiles);
+      else {
+        const project = getCurrentProject() || createProject();
+        project.codeUploads = validFiles.map(file => ({ name: file.name }));
+        saveLocalState();
+      }
+    });
+
+    const escapeHtml = text => text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+    const formatStars = rating => '★'.repeat(rating) + '☆'.repeat(5 - rating);
+    const formatDate = date => {
+      const pad = value => String(value).padStart(2, '0');
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    };
+
+    const renderComments = () => {
+      const project = getCurrentProject();
+      if (!project || !project.comments.length) {
+        commentsContainer.innerHTML = '<p class="analysis-result">첫 번째 평가를 남겨주세요.</p>';
+        return;
+      }
+      commentsContainer.innerHTML = project.comments.map(comment => {
+        const replies = comment.replies && comment.replies.length
+          ? `<div class="reply-list">${comment.replies.map(reply => `
+              <article class="reply-item">
+                <div class="comment-meta"><strong>${escapeHtml(reply.name)}</strong><span>${escapeHtml(reply.date)}</span></div>
+                <p class="reply-text">${escapeHtml(reply.text)}</p>
+              </article>`).join('')}</div>`
+          : '';
+        return `
+          <article class="comment-item" data-comment-id="${comment.id}">
+            <div class="comment-meta">
+              <strong>${escapeHtml(comment.name)}</strong>
+              <span>${formatStars(comment.rating)}</span>
+              <span>${escapeHtml(comment.date)}</span>
+            </div>
+            <p class="comment-text">${escapeHtml(comment.text)}</p>
+            <div class="comment-actions">
+              <button class="reply-toggle" type="button" data-id="${comment.id}">답글 쓰기</button>
+            </div>
+            ${replies}
+            <div class="reply-form hidden" data-parent-id="${comment.id}">
+              <textarea placeholder="답글을 입력하세요" rows="3"></textarea>
+              <button class="reply-submit" type="button" data-parent-id="${comment.id}">답글 등록</button>
+            </div>
+          </article>`;
+      }).join('');
+    };
+
+    const saveCommentToServer = async comment => {
+      const project = getCurrentProject();
+      if (!project) return;
+      await fetchJson('/api/comments', {
+        method: 'POST',
+        body: JSON.stringify({ type: 'comment', payload: { projectId: project.id, comment } }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    };
+
+    const saveReplyToServer = async (parentId, reply) => {
+      const project = getCurrentProject();
+      if (!project) return;
+      await fetchJson('/api/comments', {
+        method: 'POST',
+        body: JSON.stringify({ type: 'reply', payload: { projectId: project.id, parentId, reply } }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    };
+
+    const saveProjectDescription = async description => {
+      const project = getCurrentProject();
+      if (!project) return;
+      project.description = description;
+      saveLocalState();
+      if (!serverEnabled) return;
+      await fetchJson('/api/project', {
+        method: 'POST',
+        body: JSON.stringify({ projectId: project.id, title: project.title, description }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    };
+
+    const saveProjectTitle = async title => {
+      const project = getCurrentProject();
+      if (!project) return;
+      project.title = title;
+      saveLocalState();
+      updateProjectFields();
+      if (!serverEnabled) return;
+      await fetchJson('/api/project', {
+        method: 'POST',
+        body: JSON.stringify({ projectId: project.id, title, description: project.description }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    };
+
+    commentSubmit.addEventListener('click', () => {
+      const name = commentName.value.trim() || 'Anonymous';
+      const text = commentText.value.trim();
+      const rating = Number(commentRating.value);
+      const project = getCurrentProject();
+      if (!project) {
+        projectText.focus();
+        return;
+      }
+      if (!text) {
+        commentText.focus();
+        return;
+      }
+      const comment = {
+        id: Date.now().toString(),
+        name,
+        text,
+        rating,
+        date: formatDate(new Date()),
+        replies: []
+      };
+      project.comments.unshift(comment);
+      saveLocalState();
+      renderComments();
+      if (serverEnabled) saveCommentToServer(comment);
+      commentName.value = '';
+      commentText.value = '';
+      commentRating.value = '5';
+    });
+
+    commentsContainer.addEventListener('click', event => {
+      const toggle = event.target.closest('.reply-toggle');
+      if (toggle) {
+        const parent = commentsContainer.querySelector(`.reply-form[data-parent-id="${toggle.dataset.id}"]`);
+        if (parent) parent.classList.toggle('hidden');
+      }
+      const submit = event.target.closest('.reply-submit');
+      if (submit) {
+        const parentId = submit.dataset.parentId;
+        const form = commentsContainer.querySelector(`.reply-form[data-parent-id="${parentId}"]`);
+        const textarea = form && form.querySelector('textarea');
+        const text = textarea ? textarea.value.trim() : '';
+        if (!text) {
+          textarea.focus();
+          return;
+        }
+        const project = getCurrentProject();
+        const reply = {
+          id: `${parentId}-${Date.now()}`,
+          name: 'Project owner',
+          text,
+          date: formatDate(new Date())
+        };
+        const comment = project?.comments.find(item => item.id === parentId);
+        if (comment) {
+          comment.replies = comment.replies || [];
+          comment.replies.push(reply);
+          saveLocalState();
+          renderComments();
+          if (serverEnabled) saveReplyToServer(parentId, reply);
+        }
+        textarea.value = '';
+        if (form) form.classList.add('hidden');
+      }
+    });
+
+    const loadStoredPage = () => {
+      loadLocalState();
+      if (!Object.keys(state.projects).length) {
+        createProject('Robotics Project 1');
+      }
+      updateProjectFields();
+    };
+
+    projectDescriptionInput.addEventListener('blur', () => {
+      saveProjectDescription(projectDescriptionInput.value.trim());
+    });
+
+    projectTitleInput.addEventListener('blur', () => {
+      saveProjectTitle(projectTitleInput.value.trim() || 'Untitled project');
+    });
+
+    projectSelect.addEventListener('change', () => {
+      state.currentProjectId = projectSelect.value;
+      saveLocalState();
+      updateProjectFields();
+    });
+
+    newProjectButton.addEventListener('click', () => {
+      const project = createProject('New Project');
+      updateProjectFields();
+      if (serverEnabled) {
+        fetchJson('/api/project', {
+          method: 'POST',
+          body: JSON.stringify({ projectId: project.id, title: project.title, description: project.description }),
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    });
+
+    window.addEventListener('load', async () => {
+      loadStoredPage();
+      if (serverEnabled) await loadServerState();
+    });
+
+  </script>
+</body>
+</html>
