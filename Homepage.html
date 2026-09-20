@@ -1158,12 +1158,14 @@
       const context = canvas.getContext('2d', { willReadFrequently: true });
       const sampleCount = Math.min(12, Math.max(4, Math.ceil(hockeyVideoPreview.duration / 5)));
       const frameSamples = [];
+      let representativeFrame = null;
       const readFrame = time => new Promise(resolve => {
         const handleSeeked = () => {
           hockeyVideoPreview.removeEventListener('seeked', handleSeeked);
           canvas.width = 96;
           canvas.height = 54;
           context.drawImage(hockeyVideoPreview, 0, 0, canvas.width, canvas.height);
+          if (!representativeFrame) representativeFrame = canvas.toDataURL('image/jpeg', 0.82);
           resolve(context.getImageData(0, 0, canvas.width, canvas.height).data);
         };
         hockeyVideoPreview.addEventListener('seeked', handleSeeked);
@@ -1192,7 +1194,29 @@
       hockeyActivity.textContent = activity;
       hockeyAnalysisStatus.textContent = '비전 스캔 완료';
       hockeyAnalysisReport.textContent = `${activity === 'HIGH' ? '빠른 플레이와 장면 전환이 많은' : activity === 'MEDIUM' ? '움직임이 균형 있게 포함된' : '정적인 장면이 많은'} 영상으로 감지되었습니다. 이는 프레임 변화량 기반의 참고 분석입니다.`;
+      await requestHuggingFaceCaption(representativeFrame);
       hockeyAnalyzeButton.disabled = false;
+    };
+
+    const requestHuggingFaceCaption = async dataUrl => {
+      if (!serverEnabled || !dataUrl) return;
+      hockeyAnalysisStatus.textContent = 'Hugging Face가 대표 프레임을 설명하는 중...';
+      try {
+        const response = await fetch('/api/analyze-hockey-frame', {
+          method: 'POST',
+          headers: { 'Content-Type': 'image/jpeg' },
+          body: await fetch(dataUrl).then(result => result.blob())
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          hockeyAnalysisStatus.textContent = '브라우저 비전 스캔 완료';
+          return;
+        }
+        hockeyAnalysisStatus.textContent = '브라우저 + Hugging Face 분석 완료';
+        hockeyAnalysisReport.textContent += ` Hugging Face 대표 프레임 설명: ${result.caption}`;
+      } catch (error) {
+        hockeyAnalysisStatus.textContent = '브라우저 비전 스캔 완료';
+      }
     };
 
     const submitCodeToServer = async files => {

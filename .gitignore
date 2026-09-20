@@ -1,3 +1,4 @@
 node_modules/
 uploads/
 robotics-state.json
+.env

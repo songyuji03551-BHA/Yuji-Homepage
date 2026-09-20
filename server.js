@@ -10,6 +10,7 @@ const DATA_FILE = path.join(ROOT, 'robotics-state.json');
 const UPLOADS_DIR = path.join(ROOT, 'uploads');
 const VIDEO_DIR = path.join(UPLOADS_DIR, 'videos');
 const CAPTURE_DIR = path.join(UPLOADS_DIR, 'captures');
+const HF_MODEL = process.env.HF_IMAGE_MODEL || 'Salesforce/blip-image-captioning-base';
 
 const ensureDirectories = async () => {
   await fs.mkdir(VIDEO_DIR, { recursive: true });
@@ -61,6 +62,38 @@ app.get('/', (req, res) => {
 app.get('/api/robotics-state', async (req, res) => {
   const state = loadState();
   res.json(state);
+});
+
+app.post('/api/analyze-hockey-frame', express.raw({ type: ['image/*', 'application/octet-stream'], limit: '8mb' }), async (req, res) => {
+  const token = process.env.HF_TOKEN;
+  if (!token) {
+    return res.status(503).json({ success: false, message: 'Hugging Face token is not configured' });
+  }
+  if (!req.body || !req.body.length) {
+    return res.status(400).json({ success: false, message: 'No image frame provided' });
+  }
+
+  try {
+    const response = await fetch(`https://router.huggingface.co/hf-inference/models/${HF_MODEL}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': req.headers['content-type'] || 'application/octet-stream'
+      },
+      body: req.body
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      const message = typeof result?.error === 'string' ? result.error : 'Hugging Face analysis failed';
+      return res.status(response.status).json({ success: false, message });
+    }
+
+    const caption = Array.isArray(result) ? result[0]?.generated_text : result?.generated_text;
+    return res.json({ success: true, caption: caption || '프레임 설명을 받지 못했습니다.' });
+  } catch (error) {
+    console.error('Hugging Face request failed:', error.message);
+    return res.status(502).json({ success: false, message: 'Hugging Face에 연결할 수 없습니다.' });
+  }
 });
 
 app.post('/api/project', async (req, res) => {
